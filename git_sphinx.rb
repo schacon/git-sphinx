@@ -26,6 +26,7 @@ module GitSphinx
       puts '<sphinx:schema>
   <sphinx:field name="repository"/> 
   <sphinx:field name="path"/> 
+  <sphinx:field name="content"/>
   <sphinx:attr name="modified" type="timestamp"/>
   <sphinx:field name="language"/>
 </sphinx:schema>'
@@ -50,15 +51,15 @@ module GitSphinx
           # matter - i assume sphinx will just ignore it if it can't parse any
           # valid chars out of it
                     
-          content = blob.data
+          content = blob.data.fast_xs
           #.fast_xs
           
           puts "<sphinx:document id=\"#{id}\">
+  <content><![CDATA[#{content}]]></content>
   <repository>#{repo}</repository>
   <path>#{path}</path>
   <modified>1012325463</modified>
   <language></language>
-  <content><![CDATA[#{content}]]></content>
 </sphinx:document>"
         end
       end
