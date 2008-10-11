@@ -1,0 +1,27 @@
+Git-Sphinx Script
+=========================
+
+Git-Sphinx is my attempt to write a script that will create proper sphinx indexes
+directly from Git repositories, so you can search through ALL of your source code
+near-instantly.
+
+I've included a sample sphinx config file that uses the script to generate data
+that is fed to it via the xmlpipe2 type.  You will have to modify index.rb
+to return an array of repositories and paths that is appropriate for you.
+
+TODO
+=========================
+
+* fix bugs with invalid characters in the content feed
+* develop simple frontend (sinatra app) for searching that index usefully
+
+LICENSE
+=========================
+
+MIT.  Do whatever you want with it.
+
+
+AUTHOR 
+=========================
+
+* Scott Chacon (schacon@gmail.com)
