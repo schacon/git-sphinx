@@ -1,0 +1,125 @@
+
+source main
+{
+	type			= xmlpipe2
+	xmlpipe_command	= /opt/gitsphinx/index.rb --main
+}
+
+source delta : main
+{
+	xmlpipe_command	= /opt/gitsphinx/index.rb --new
+}
+
+#############################################################################
+## index definition
+#############################################################################
+
+index main
+{
+	source = main
+
+	# index files path and file name, without extension
+	# mandatory, path must be writable, extensions will be auto-appended
+	path			= /opt/data/main
+
+	# document attribute values (docinfo) storage mode
+	# optional, default is 'extern'
+	# known values are 'none', 'extern' and 'inline'
+	docinfo			= extern
+	mlock			= 0
+
+	# a list of morphology preprocessors to apply
+	# builtin preprocessors are 'none', 'stem_en', 'stem_ru', 'stem_enru',
+	# 'soundex', and 'metaphone'; additional preprocessors available from
+	# morphology 	= stem_en, stem_ru, soundex
+	# morphology	= libstemmer_german
+	# morphology	= libstemmer_sv
+	morphology		= none
+
+	# stopword files list (space separated)
+	# contents are plain text, charset_table and stemming are both applied
+	# stopwords			= /var/data/stopwords.txt
+
+	# wordforms file, in "mapfrom > mapto" plain text format
+	# wordforms			= /var/data/wordforms.txt
+
+	# tokenizing exceptions file
+	# exceptions		= /var/data/exceptions.txt
+
+	# minimum indexed word length
+	min_word_len		= 4
+
+	# charset encoding type
+	# known types are 'sbcs' (Single Byte CharSet) and 'utf-8'
+	charset_type		= utf-8
+
+	# charset definition and case folding rules "table"
+	# 'utf-8' default value is
+	# charset_table		= 0..9, A..Z->a..z, _, a..z, U+410..U+42F->U+430..U+44F, U+430..U+44F
+
+	# ignored characters list
+	# ignore_chars		= U+00AD
+
+	# minimum word prefix length to index
+	# min_prefix_len	= 0
+
+	# minimum word infix length to index
+	# min_infix_len		= 0
+
+	# list of fields to limit prefix/infix indexing to
+	# prefix_fields		= filename
+	# infix_fields		= url, domain
+
+	# enable star-syntax (wildcards) when searching prefix/infix indexes
+	# enable_star		= 1
+
+	# phrase boundary characters list
+	# phrase_boundary		= ., ?, !, U+2026 # horizontal ellipsis
+
+	# phrase boundary word position increment
+	# phrase_boundary_step	= 100
+}
+
+
+index delta : main
+{
+	source = delta
+	path			= /opt/data/delta
+}
+
+#############################################################################
+## indexer settings
+#############################################################################
+
+indexer
+{
+	# memory limit, in bytes, kiloytes (16384K) or megabytes (256M)
+	# optional, default is 32M, max is 2047M, recommended is 256M to 1024M
+	mem_limit			= 256M
+
+	# maximum IO calls per second (for I/O throttling)
+	# max_iops			= 40
+	# maximum IO call size, bytes (for I/O throttling)
+	# max_iosize		= 1048576
+}
+
+#############################################################################
+## searchd settings
+#############################################################################
+
+searchd
+{
+	# address			= 192.168.0.1
+	port				= 3312
+	log					= /var/log/searchd.log
+	query_log			= /var/log/query.log
+	read_timeout		= 5
+	max_children		= 30
+	pid_file			= /var/log/searchd.pid
+	max_matches			= 1000
+	seamless_rotate		= 1
+	preopen_indexes		= 0
+	unlink_old			= 1
+}
+
+# --eof--
