@@ -16,7 +16,16 @@ end
 # get repository list from db (based on main or new)
 repos = []
 if index_main
-  repos << ['fuzed', '/Users/schacon/projects/fuzed/.git']
+  projects = `locate '.git/description' | grep projects`
+  projects.each do |project_line|
+    project_line = project_line.split('/')
+    project_line.pop
+    if(project_line.size < 7)
+      project = project_line.join('/')
+      pname = project.scan(/\/([a-zA-z0-9\-_]*?)\/.git/).first.first rescue nil
+      repos << [pname, project] if pname
+    end
+  end
 else
   repos << ['grit', '/Users/schacon/projects/grit/.git']
 end

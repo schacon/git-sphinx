@@ -4,14 +4,7 @@ require 'fast_xs'
 require 'dm-core'
 require 'albino'
 require 'pp'
-
-class GitFile
- include DataMapper::Resource
- property :id,    Integer, :serial => true
- property :repo,  String
- property :path,  String
- property :sha_value,  String
-end
+require 'git_file'
  
 module GitSphinx
   class Indexer
@@ -38,6 +31,7 @@ module GitSphinx
       g = Grit::Repo.new(path)
 
       # !!! do this for each head, ignoring common blobs, starting with master
+      Grit::Git.git_timeout = 40
       g.git.method_missing('ls_tree', {'full-name' => true, 'r' => true}, 'master').split("\n").each do |line|
         (info, path) = line.split("\t")
         (mode, type, sha) = info.split(' ')
@@ -46,14 +40,14 @@ module GitSphinx
         if type == 'blob' && (lexer != 'plain')
           next if !(id = get_object_id(repo, path, sha))
           blob = g.blob(sha)
-          
+        
           # i'd like to check for binary data here, but I suppose it doens't really 
           # matter - i assume sphinx will just ignore it if it can't parse any
           # valid chars out of it
-                    
+                  
           content = blob.data.fast_xs
           #.fast_xs
-          
+        
           puts "<sphinx:document id=\"#{id}\">
   <content><![CDATA[#{content}]]></content>
   <repository>#{repo}</repository>
